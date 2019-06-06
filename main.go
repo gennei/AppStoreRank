@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/joho/godotenv"
 )
 
@@ -20,7 +22,7 @@ type Slack struct {
 	Channel   string `json:"channel"`
 }
 
-func main() {
+func HandleRequest(ctx context.Context) (string, error) {
 
 	godotenv.Load()
 
@@ -37,6 +39,12 @@ func main() {
 
 	text := fmt.Sprintf("%s は %s です\n", title, rank)
 	post(text)
+
+	return "", nil
+}
+
+func main() {
+	lambda.Start(HandleRequest)
 }
 
 func post(s string) {
